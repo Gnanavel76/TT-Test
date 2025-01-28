@@ -37,7 +37,7 @@ router.get('/health', (req, res) => {
 
 router.post('/webhook', (req, res) => {
     console.log(req.body)
-    let alertMessage = req.body.html
+    let alertMessage = req.body.summary
     let fromAddress = req.body.fromAddress
 
     if (alertMessage === "Sample html content") {
