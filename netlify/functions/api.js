@@ -39,7 +39,7 @@ router.post('/webhook', (req, res) => {
     let alertMessage = req.body.summary
     let fromAddress = req.body.fromAddress
 
-    if (alertMessage === "Sample html content") {
+    if (alertMessage === "Sample Summary") {
         return res.send("Ok")
     }
     if (fromAddress !== expectedFromAddress) {
@@ -113,3 +113,4 @@ router.post('/webhook', (req, res) => {
 api.use("/api/", router);
 
 export const handler = serverless(api);
+
