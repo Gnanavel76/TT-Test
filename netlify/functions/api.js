@@ -2,12 +2,11 @@ import axios from 'axios';
 import express, { Router } from 'express';
 import serverless from "serverless-http";
 
-
 const api = express();
 const TRADETRON_URL = 'https://api.tradetron.tech/api';
 
 // Entry and Exit signal from TradingView
-const MY_STGY_AUTH_TOKEN = 'f1f84142-f815-468a-9d9f-e436b47e47f2'
+const MY_STGY_AUTH_TOKEN = 'f0557bda-d898-4a5d-98f4-0f00754daae7'
 
 const expectedFromAddress = "noreply@tradingview.com";
 
@@ -51,7 +50,6 @@ router.post('/webhook', (req, res) => {
         console.log("Alert message is null")
         return
     }
-
     const match = alertMessage.match(/nifty_action=([^ ]+)/);
     let action = null
     if (match) {
