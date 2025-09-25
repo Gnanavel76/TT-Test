@@ -6,7 +6,7 @@ const api = express();
 const TRADETRON_URL = 'https://api.tradetron.tech/api';
 
 // Entry and Exit signal from TradingView
-const MY_STGY_AUTH_TOKEN = 'f0557bda-d898-4a5d-98f4-0f00754daae7'
+const MY_STGY_AUTH_TOKEN = '6c074f02-0d74-447e-ba06-6a4859a01fad'
 
 const expectedFromAddress = "noreply@tradingview.com";
 
@@ -34,7 +34,7 @@ router.get('/health', (req, res) => {
     res.send("OK")
 });
 
-router.post('/webhook', (req, res) => {
+router.post('/webhook', async (req, res) => {
     console.log(req.body)
     let alertMessage = req.body.summary
     let fromAddress = req.body.fromAddress
@@ -70,47 +70,46 @@ router.post('/webhook', (req, res) => {
     }
 
     const requests = [
-        axios.post(TRADETRON_URL, {
-            "auth-token": MY_STGY_AUTH_TOKEN,
-            key: actionValues.key,
-            value: actionValues.value
-        }, {
+        axios.post(TRADETRON_URL, {}, {
+            params: {
+                "auth-token": MY_STGY_AUTH_TOKEN,
+                key: actionValues.key,
+                value: actionValues.value
+            },
             headers: {
                 "Content-Type": 'application/json'
             }
         })
     ];
 
-    Promise.allSettled(requests)
-        .then((results) => {
-            const successes = [];
-            const failures = [];
+    try {
+        const results = await Promise.allSettled(requests)
 
-            results.forEach((result, index) => {
-                if (result.status === "fulfilled") {
-                    successes.push(result.value);
-                    console.log(`Request ${index + 1} succeeded:`, result.value.config.data);
-                } else {
-                    failures.push(result.reason);
-                    console.error(`Request ${index + 1} failed:`, result.reason);
-                }
-            });
+        const successes = [];
+        const failures = [];
 
-            if (successes.length > 0) {
-                console.log("Partial success: Some requests completed successfully.");
+        results.forEach((result, index) => {
+            if (result.status === "fulfilled") {
+                successes.push(result.value);
+                console.log(`Request ${index + 1} succeeded:`, result.value.config.data);
             } else {
-                console.log("All requests failed.");
+                failures.push(result.reason);
+                console.error(`Request ${index + 1} failed:`, result.reason);
             }
-            res.send("Ok")
-        })
-        .catch((error) => {
-            console.error("Unexpected error:", error);
-            res.send("Ok")
         });
 
+        if (successes.length > 0) {
+            console.log("Partial success: Some requests completed successfully.");
+        } else {
+            console.log("All requests failed.");
+        }
+        res.send("Ok")
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        res.send("Ok")
+    }
 });
 
 api.use("/api/", router);
 
 export const handler = serverless(api);
-
