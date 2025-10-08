@@ -6,7 +6,7 @@ const api = express();
 const TRADETRON_URL = 'https://api.tradetron.tech/api';
 
 // Entry and Exit signal from TradingView
-const MY_STGY_AUTH_TOKEN = '6c074f02-0d74-447e-ba06-6a4859a01fad'
+const MY_STGY_AUTH_TOKEN = '6199afa6-2007-4df9-968f-593473ef8378'
 
 const expectedFromAddress = "noreply@tradingview.com";
 
@@ -113,3 +113,4 @@ router.post('/webhook', async (req, res) => {
 api.use("/api/", router);
 
 export const handler = serverless(api);
+
