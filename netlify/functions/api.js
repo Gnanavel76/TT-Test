@@ -66,8 +66,8 @@ router.post('/webhook', async (req, res) => {
         return
     }
 
-    const requests = [
-        axios.get(TRADETRON_URL, {}, {
+    try {
+        const response = await axios.get(TRADETRON_URL, {}, {
             params: {
                 "auth-token": MY_STGY_AUTH_TOKEN,
                 key: actionValues.key,
@@ -77,29 +77,8 @@ router.post('/webhook', async (req, res) => {
                 "Content-Type": 'application/json'
             }
         })
-    ];
+        console.log(response.data)
 
-    try {
-        const results = await Promise.allSettled(requests)
-
-        const successes = [];
-        const failures = [];
-
-        results.forEach((result, index) => {
-            if (result.status === "fulfilled") {
-                successes.push(result.value);
-                console.log(`Request ${index + 1} succeeded:`, result.value.config.data);
-            } else {
-                failures.push(result.reason);
-                console.error(`Request ${index + 1} failed:`, result.reason);
-            }
-        });
-
-        if (successes.length > 0) {
-            console.log("Partial success: Some requests completed successfully.");
-        } else {
-            console.log("All requests failed.");
-        }
         res.send("Ok")
     } catch (error) {
         console.error("Unexpected error:", error);
