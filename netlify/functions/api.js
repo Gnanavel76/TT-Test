@@ -42,10 +42,7 @@ router.post('/webhook', async (req, res) => {
     if (alertMessage === "Sample Summary") {
         return res.send("Ok")
     }
-    if (fromAddress !== expectedFromAddress) {
-        console.log("Email mismatch")
-        return
-    }
+
     if (alertMessage === null || alertMessage === undefined) {
         console.log("Alert message is null")
         return
@@ -70,7 +67,7 @@ router.post('/webhook', async (req, res) => {
     }
 
     const requests = [
-        axios.post(TRADETRON_URL, {}, {
+        axios.get(TRADETRON_URL, {}, {
             params: {
                 "auth-token": MY_STGY_AUTH_TOKEN,
                 key: actionValues.key,
@@ -113,4 +110,3 @@ router.post('/webhook', async (req, res) => {
 api.use("/api/", router);
 
 export const handler = serverless(api);
-
