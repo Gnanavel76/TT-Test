@@ -67,7 +67,7 @@ router.post('/webhook', async (req, res) => {
     }
 
     try {
-        const response = await axios.get(TRADETRON_URL, {}, {
+        const response = await axios.get(TRADETRON_URL, {
             params: {
                 "auth-token": MY_STGY_AUTH_TOKEN,
                 key: actionValues.key,
